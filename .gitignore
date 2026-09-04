@@ -12,3 +12,6 @@ wheels/
 
 # Data
 data/raw/
+
+#artifacts
+artifacts/
