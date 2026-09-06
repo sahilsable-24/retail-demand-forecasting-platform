@@ -23,7 +23,7 @@ def predict_single_day(store_history_df,model,encoder,feature_cols,target_date,p
 
     store_id = store_history_df["Store"].iloc[0]
 
-    encoded_val = encoder.transform([[state_holiday]])[0]
+    encoded_val = encoder.transform(pd.DataFrame({'StateHoliday': [state_holiday]}))[0]
 
     features = {
         'Store': store_id,
@@ -46,3 +46,35 @@ def predict_single_day(store_history_df,model,encoder,feature_cols,target_date,p
     predictions = model.predict(X_pred)[0]
 
     return predictions
+
+def predict_horizon(store_history_df, model,encoder, feature_cols, start_date,horizon_days,promo_schedule,state_holiday_schedule=None, school_holiday_schedule=None,open_schedule=None):
+    current_history = store_history_df.copy()
+    results= []
+    if state_holiday_schedule is None:
+        state_holiday_schedule = ['0'] * horizon_days
+
+    if school_holiday_schedule is None:
+        school_holiday_schedule = [0] * horizon_days
+
+    if open_schedule is None:
+        open_schedule = [1] * horizon_days
+
+    for i in range(horizon_days):
+        target_date = start_date + pd.Timedelta(days=i)
+
+        if open_schedule[i] == 0:
+            prediction = 0.0
+        else:
+            prediction = predict_single_day(current_history,model,encoder,feature_cols,target_date,promo_schedule[i],state_holiday_schedule[i],school_holiday_schedule[i])
+
+        new_row = pd.DataFrame({
+            "Store":[current_history['Store'].iloc[0]],
+            "Date": [target_date],
+            "Sales": [prediction]
+        })
+
+        current_history = pd.concat([current_history, new_row], ignore_index=True)
+
+        results.append({"Date": target_date, "Predicted_Sales":prediction})
+
+    return pd.DataFrame(results)
