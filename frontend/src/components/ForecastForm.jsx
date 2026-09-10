@@ -15,6 +15,11 @@ function ForecastForm({ selectedStore, onForecastResult }) {
       return;
     }
 
+    if (!horizonDays || horizonDays < 1){
+        setError("Please enter a valid forecast horizon.")
+        return;
+    }
+
     setSubmitting(true);
     setError(null);
 
@@ -67,7 +72,10 @@ function ForecastForm({ selectedStore, onForecastResult }) {
             min="1"
             max="30"
             value={horizonDays}
-            onChange={(e) => setHorizonDays(Number(e.target.value))}
+            onChange={(e) => {
+                const value = e.target.value;
+                setHorizonDays(value === "" ? "" : Number(value));
+            }}
             className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
