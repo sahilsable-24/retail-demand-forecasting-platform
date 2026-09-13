@@ -1,6 +1,20 @@
 import { useState } from "react";
 import { getPredictions } from "../api/client";
 
+function buildOpenSchedule(startDateStr, horizonDays) {
+  const schedule = [];
+  const start = new Date(startDateStr);
+
+  for (let i = 0; i < horizonDays; i++) {
+    const current = new Date(start);
+    current.setDate(start.getDate() + i);
+    const dayOfWeek = current.getDay(); // 0 = Sunday in JS
+    schedule.push(dayOfWeek === 0 ? 0 : 1);
+  }
+
+  return schedule;
+}
+
 function ForecastForm({ selectedStore, onForecastResult }) {
   const [startDate, setStartDate] = useState("2015-07-01");
   const [horizonDays, setHorizonDays] = useState(7);
@@ -28,6 +42,7 @@ function ForecastForm({ selectedStore, onForecastResult }) {
       start_date: startDate,
       horizon_days: horizonDays,
       promo_schedule: Array(horizonDays).fill(0),
+      open_schedule: buildOpenSchedule(startDate,horizonDays),
     };
 
     try {
