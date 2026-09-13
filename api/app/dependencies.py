@@ -7,7 +7,9 @@ stores_df = stores_df.astype(object).where(pd.notnull(stores_df), None)
 
 # print(stores_df)
 
-sales_df = pd.read_csv(DATA_DIR_RAW/"train.csv", dtype={'StateHoliday': str})
+sales_df = pd.read_csv(DATA_DIR_RAW/"train.csv",
+                       usecols=["Store", "Date", "Sales"],
+                       dtype={'StateHoliday': str,'Store':"int32",'Sales':"int32"})
 sales_df["Date"] = pd.to_datetime(sales_df["Date"])
 
 model, encoder, feature_cols = load_model_and_encoder_feature_cols()

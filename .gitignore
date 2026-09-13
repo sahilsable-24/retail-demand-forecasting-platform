@@ -11,6 +11,5 @@ wheels/
 .ipynb_checkpoints
 
 # Data
-data/raw/
 
 #artifacts
