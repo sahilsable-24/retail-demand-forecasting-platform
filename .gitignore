@@ -9,7 +9,8 @@ wheels/
 # Virtual environments
 .venv
 .ipynb_checkpoints
-
+.env
+.env.production
 # Data
 
 #artifacts
